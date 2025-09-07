@@ -184,9 +184,10 @@ export function BattleArena({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={startBattle}
-              className="cyber-button"
+              className="cyber-button focus:outline-none focus:ring-2 focus:ring-neon-blue focus:ring-offset-2 focus:ring-offset-slate-900"
+              aria-label={`Start battle between ${playerNFT.name} and ${opponentNFT.name}`}
             >
-              <Zap className="w-5 h-5 inline mr-2" />
+              <Zap className="w-5 h-5 inline mr-2" aria-hidden="true" />
               START BATTLE
             </motion.button>
           )}
@@ -216,7 +217,8 @@ export function BattleArena({
           <div className="text-center mt-6">
             <button
               onClick={onBackToSelection}
-              className="text-gray-400 hover:text-white transition-colors duration-200"
+              className="text-gray-400 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-neon-blue focus:ring-offset-2 focus:ring-offset-slate-900 rounded px-2 py-1"
+              aria-label="Go back to NFT selection screen"
             >
               ← Back to Selection
             </button>
