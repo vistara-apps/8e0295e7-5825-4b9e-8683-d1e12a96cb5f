@@ -30,7 +30,16 @@
     @apply px-6 py-3 bg-gradient-to-r from-neon-blue to-neon-purple text-white font-bold rounded-lg;
     @apply hover:from-neon-purple hover:to-neon-blue transition-all duration-300;
     @apply shadow-lg hover:shadow-neon-blue/50;
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
     text-shadow: 0 0 10px currentColor;
+    touch-action: manipulation;
+  }
+
+  @media (max-width: 768px) {
+    .cyber-button {
+      @apply px-8 py-4 text-lg;
+      @apply min-h-[48px];
+    }
   }
 
   .cyber-button:disabled {
@@ -58,6 +67,14 @@
   .nft-card {
     @apply cyber-border rounded-lg p-4 hover:shadow-lg transition-all duration-300;
     @apply hover:border-neon-purple hover:bg-opacity-20;
+    @apply min-h-[44px] cursor-pointer;
+    touch-action: manipulation;
+  }
+
+  @media (max-width: 768px) {
+    .nft-card {
+      @apply p-3 min-h-[48px];
+    }
   }
 
   .stats-bar {

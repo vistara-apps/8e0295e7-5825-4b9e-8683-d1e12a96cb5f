@@ -39,8 +39,18 @@ export function NFTCard({
       <motion.div
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className={`nft-card cursor-pointer ${isSelected ? 'border-neon-purple glow-neon-purple' : ''}`}
+        className={`nft-card cursor-pointer focus:outline-none focus:ring-2 focus:ring-neon-blue focus:ring-offset-2 focus:ring-offset-slate-900 ${isSelected ? 'border-neon-purple glow-neon-purple' : ''}`}
         onClick={handleClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-label={`Select ${nft.name} NFT for battle. Level ${nft.battleStats.level}, ${nft.battleStats.attack} attack power, ${rarity} rarity`}
+        aria-pressed={isSelected}
       >
         <div className="flex items-center space-x-3">
           <div className="relative w-12 h-12 rounded-lg overflow-hidden">
@@ -69,8 +79,18 @@ export function NFTCard({
     <motion.div
       whileHover={{ scale: 1.02, rotateY: 5 }}
       whileTap={{ scale: 0.98 }}
-      className={`nft-card cursor-pointer hologram-effect ${isSelected ? 'border-neon-purple glow-neon-purple' : ''}`}
+      className={`nft-card cursor-pointer hologram-effect focus:outline-none focus:ring-2 focus:ring-neon-blue focus:ring-offset-2 focus:ring-offset-slate-900 ${isSelected ? 'border-neon-purple glow-neon-purple' : ''}`}
       onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      tabIndex={0}
+      role="button"
+      aria-label={`Select ${nft.name} NFT for battle. Level ${nft.battleStats.level}, ${nft.battleStats.attack} attack, ${nft.battleStats.defense} defense, ${nft.battleStats.speed} speed, ${nft.battleStats.health} health. ${rarity} rarity, ${element} element`}
+      aria-pressed={isSelected}
     >
       <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4">
         <Image

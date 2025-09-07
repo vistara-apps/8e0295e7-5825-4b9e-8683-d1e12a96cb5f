@@ -10,9 +10,14 @@ import { NFTPortfolio } from '@/components/NFTPortfolio';
 import { BattleArena } from '@/components/BattleArena';
 import { MOCK_NFTS } from '@/lib/constants';
 import type { NFT, User, GameState } from '@/lib/types';
+import { useSuccessNotification, useErrorNotification, useBattleNotification } from '@/components/NotificationSystem';
 
 export default function TrellendarArena() {
   const { setFrameReady } = useMiniKit();
+  const showSuccess = useSuccessNotification();
+  const showError = useErrorNotification();
+  const showBattle = useBattleNotification();
+  
   const [gameState, setGameState] = useState<GameState>({
     currentBattle: null,
     selectedNFT: null,
@@ -45,10 +50,14 @@ export default function TrellendarArena() {
       selectedNFT: nft,
       battlePhase: 'selection',
     }));
+    showSuccess('NFT Selected', `${nft.name} is ready for battle!`);
   };
 
   const handleStartBattle = (opponent: NFT) => {
-    if (!gameState.selectedNFT) return;
+    if (!gameState.selectedNFT) {
+      showError('No NFT Selected', 'Please select an NFT before starting a battle.');
+      return;
+    }
     
     setGameState(prev => ({
       ...prev,
@@ -56,11 +65,19 @@ export default function TrellendarArena() {
       isInBattle: true,
       battlePhase: 'battle',
     }));
+    showBattle('Battle Started!', `${gameState.selectedNFT.name} vs ${opponent.name}`);
   };
 
   const handleBattleComplete = (winner: NFT, loser: NFT) => {
     // Update user stats (in a real app, this would be saved to database)
     console.log('Battle completed:', { winner: winner.name, loser: loser.name });
+    
+    const isPlayerWinner = winner.id === gameState.selectedNFT?.id;
+    if (isPlayerWinner) {
+      showSuccess('Victory!', `${winner.name} defeated ${loser.name}!`);
+    } else {
+      showError('Defeat', `${loser.name} was defeated by ${winner.name}. Better luck next time!`);
+    }
   };
 
   const handleBackToSelection = () => {
@@ -74,10 +91,14 @@ export default function TrellendarArena() {
   };
 
   const handleFindOpponent = () => {
-    if (!gameState.selectedNFT) return;
+    if (!gameState.selectedNFT) {
+      showError('No NFT Selected', 'Please select an NFT first before finding an opponent.');
+      return;
+    }
     
     // Simple matchmaking - select random opponent
     const randomOpponent = availableOpponents[Math.floor(Math.random() * availableOpponents.length)];
+    showBattle('Opponent Found!', `Matched against ${randomOpponent.name}`);
     handleStartBattle(randomOpponent);
   };
 
@@ -118,17 +139,17 @@ export default function TrellendarArena() {
           </div>
 
           {/* Stats Bar */}
-          <div className="flex justify-center space-x-8 text-sm">
+          <div className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-8 text-sm">
             <div className="flex items-center space-x-2">
-              <Users className="w-4 h-4 text-neon-blue" />
+              <Users className="w-4 h-4 text-neon-blue" aria-hidden="true" />
               <span>1,247 Active Fighters</span>
             </div>
             <div className="flex items-center space-x-2">
-              <Swords className="w-4 h-4 text-neon-purple" />
+              <Swords className="w-4 h-4 text-neon-purple" aria-hidden="true" />
               <span>8,932 Battles Today</span>
             </div>
             <div className="flex items-center space-x-2">
-              <Trophy className="w-4 h-4 text-neon-green" />
+              <Trophy className="w-4 h-4 text-neon-green" aria-hidden="true" />
               <span>156 Champions</span>
             </div>
           </div>
@@ -168,9 +189,10 @@ export default function TrellendarArena() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handleFindOpponent}
-                      className="cyber-button text-lg px-8 py-4"
+                      className="cyber-button text-lg px-8 py-4 focus:outline-none focus:ring-2 focus:ring-neon-blue focus:ring-offset-2 focus:ring-offset-slate-900"
+                      aria-label={`Find opponent for ${gameState.selectedNFT.name} to battle against`}
                     >
-                      <Zap className="w-6 h-6 inline mr-2" />
+                      <Zap className="w-6 h-6 inline mr-2" aria-hidden="true" />
                       FIND OPPONENT
                     </motion.button>
                   </div>
