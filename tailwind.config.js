@@ -12,6 +12,11 @@ module.exports = {
         accent: 'hsl(180, 70%, 45%)',
         bg: 'hsl(220, 15%, 10%)',
         surface: 'hsl(220, 15%, 15%)',
+        'neon-blue': '#00f5ff',
+        'neon-purple': '#bf00ff',
+        'neon-green': '#00ff88',
+        'neon-orange': '#ff8800',
+        'neon-pink': '#ff0080',
         neon: {
           blue: '#00f5ff',
           purple: '#bf00ff',

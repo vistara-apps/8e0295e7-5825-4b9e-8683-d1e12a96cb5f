@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConnectWallet, Wallet } from '@coinbase/onchainkit/wallet';
 import { Name, Avatar } from '@coinbase/onchainkit/identity';
-import { useMiniKit } from '@coinbase/onchainkit/minikit';
+// import { useMiniKit } from '@coinbase/onchainkit/minikit';
 import { Swords, Zap, Trophy, Users } from 'lucide-react';
 import { NFTPortfolio } from '@/components/NFTPortfolio';
 import { BattleArena } from '@/components/BattleArena';
@@ -12,7 +15,7 @@ import { MOCK_NFTS } from '@/lib/constants';
 import type { NFT, User, GameState } from '@/lib/types';
 
 export default function TrellendarArena() {
-  const { setFrameReady } = useMiniKit();
+  // const { setFrameReady } = useMiniKit();
   const [gameState, setGameState] = useState<GameState>({
     currentBattle: null,
     selectedNFT: null,
@@ -35,9 +38,9 @@ export default function TrellendarArena() {
   const [userNFTs] = useState<NFT[]>(MOCK_NFTS);
   const [availableOpponents] = useState<NFT[]>(MOCK_NFTS.slice(1));
 
-  useEffect(() => {
-    setFrameReady();
-  }, [setFrameReady]);
+  // useEffect(() => {
+  //   setFrameReady();
+  // }, [setFrameReady]);
 
   const handleSelectNFT = (nft: NFT) => {
     setGameState(prev => ({
