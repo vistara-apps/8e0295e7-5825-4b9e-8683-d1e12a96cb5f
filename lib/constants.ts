@@ -1,3 +1,5 @@
+import type { NFT } from './types';
+
 export const BATTLE_CONFIG = {
   MAX_HEALTH: 100,
   BASE_ATTACK_DAMAGE: 20,

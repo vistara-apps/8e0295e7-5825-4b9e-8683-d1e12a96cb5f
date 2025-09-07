@@ -5,10 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ConnectWallet, Wallet } from '@coinbase/onchainkit/wallet';
 import { Name, Avatar } from '@coinbase/onchainkit/identity';
 import { useMiniKit } from '@coinbase/onchainkit/minikit';
-import { Swords, Zap, Trophy, Users } from 'lucide-react';
+import { Swords, Zap, Trophy, Users, CreditCard } from 'lucide-react';
 import { NFTPortfolio } from '@/components/NFTPortfolio';
 import { BattleArena } from '@/components/BattleArena';
+import { PaymentModal } from '@/components/PaymentModal';
+import { PaymentTest } from '@/components/PaymentTest';
 import { MOCK_NFTS } from '@/lib/constants';
+import { X402_CONFIG } from '@/lib/payments';
 import type { NFT, User, GameState } from '@/lib/types';
 
 export default function TrellendarArena() {
@@ -20,6 +23,9 @@ export default function TrellendarArena() {
     isInBattle: false,
     battlePhase: 'selection',
   });
+
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [pendingBattle, setPendingBattle] = useState<{ opponent: NFT; battleId: string } | null>(null);
 
   const [user] = useState<User>({
     farcasterId: 'demo-user',
@@ -50,17 +56,60 @@ export default function TrellendarArena() {
   const handleStartBattle = (opponent: NFT) => {
     if (!gameState.selectedNFT) return;
     
+    // Generate a unique battle ID
+    const battleId = `battle_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Set up pending battle and show payment modal
+    setPendingBattle({ opponent, battleId });
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentSuccess = (transactionHash: string) => {
+    if (!pendingBattle || !gameState.selectedNFT) return;
+    
+    // Payment successful, start the battle
     setGameState(prev => ({
       ...prev,
-      opponent,
+      opponent: pendingBattle.opponent,
       isInBattle: true,
       battlePhase: 'battle',
+      currentBattle: {
+        battleId: pendingBattle.battleId,
+        player1NFTId: gameState.selectedNFT!.id,
+        player2NFTId: pendingBattle.opponent.id,
+        winnerNFTId: null,
+        timestamp: Date.now(),
+        battleLog: [],
+        status: 'active',
+      },
     }));
+    
+    // Clear pending battle
+    setPendingBattle(null);
+    
+    console.log('Battle started with payment confirmation:', transactionHash);
+  };
+
+  const handlePaymentCancel = () => {
+    setShowPaymentModal(false);
+    setPendingBattle(null);
   };
 
   const handleBattleComplete = (winner: NFT, loser: NFT) => {
     // Update user stats (in a real app, this would be saved to database)
     console.log('Battle completed:', { winner: winner.name, loser: loser.name });
+    
+    // Update battle state
+    if (gameState.currentBattle) {
+      setGameState(prev => ({
+        ...prev,
+        currentBattle: prev.currentBattle ? {
+          ...prev.currentBattle,
+          winnerNFTId: winner.id,
+          status: 'completed',
+        } : null,
+      }));
+    }
   };
 
   const handleBackToSelection = () => {
@@ -150,6 +199,11 @@ export default function TrellendarArena() {
                 onSelectNFT={handleSelectNFT}
               />
 
+              {/* X402 Payment Test Component */}
+              <div className="mt-8">
+                <PaymentTest />
+              </div>
+
               {/* Battle Initiation */}
               {gameState.selectedNFT && (
                 <motion.div
@@ -161,9 +215,22 @@ export default function TrellendarArena() {
                     <h3 className="text-2xl font-bold neon-text mb-4">
                       {gameState.selectedNFT.name} is Ready for Battle!
                     </h3>
-                    <p className="text-gray-300 mb-6">
+                    <p className="text-gray-300 mb-4">
                       Find an opponent and prove your NFT's worth in the arena.
                     </p>
+                    
+                    {/* Payment Info */}
+                    <div className="bg-gradient-to-r from-green-900/20 to-blue-900/20 rounded-lg p-4 mb-6 cyber-border">
+                      <div className="flex items-center justify-center space-x-2 mb-2">
+                        <CreditCard className="w-5 h-5 text-neon-green" />
+                        <span className="text-sm font-semibold">Battle Entry Fee</span>
+                      </div>
+                      <div className="text-center">
+                        <span className="text-2xl font-bold text-neon-green">{X402_CONFIG.BATTLE_FEE} USDC</span>
+                        <p className="text-xs text-gray-400 mt-1">Paid on Base network</p>
+                      </div>
+                    </div>
+                    
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -171,7 +238,7 @@ export default function TrellendarArena() {
                       className="cyber-button text-lg px-8 py-4"
                     >
                       <Zap className="w-6 h-6 inline mr-2" />
-                      FIND OPPONENT
+                      FIND OPPONENT & PAY
                     </motion.button>
                   </div>
                 </motion.div>
@@ -208,6 +275,16 @@ export default function TrellendarArena() {
           <p className="mt-2">Join the ultimate NFT battle experience</p>
         </motion.footer>
       </div>
+
+      {/* Payment Modal */}
+      {pendingBattle && (
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={handlePaymentCancel}
+          onPaymentSuccess={handlePaymentSuccess}
+          battleId={pendingBattle.battleId}
+        />
+      )}
     </div>
   );
 }
