@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+@layer base {
+  * {
+    @apply border-gray-700;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white font-cyber;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    min-height: 100vh;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .cyber-border {
+    @apply border border-neon-blue bg-opacity-10 backdrop-blur-sm;
+    box-shadow: 0 0 10px rgba(0, 245, 255, 0.3), inset 0 0 10px rgba(0, 245, 255, 0.1);
+  }
+
+  .cyber-button {
+    @apply px-6 py-3 bg-gradient-to-r from-neon-blue to-neon-purple text-white font-bold rounded-lg;
+    @apply hover:from-neon-purple hover:to-neon-blue transition-all duration-300;
+    @apply shadow-lg hover:shadow-neon-blue/50;
+    text-shadow: 0 0 10px currentColor;
+  }
+
+  .cyber-button:disabled {
+    @apply opacity-50 cursor-not-allowed;
+    @apply from-gray-600 to-gray-700 hover:from-gray-600 hover:to-gray-700;
+  }
+
+  .neon-text {
+    @apply text-neon-blue;
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  }
+
+  .battle-arena {
+    @apply relative overflow-hidden rounded-xl;
+    background: linear-gradient(135deg, 
+      rgba(0, 245, 255, 0.1) 0%, 
+      rgba(191, 0, 255, 0.1) 50%, 
+      rgba(0, 255, 136, 0.1) 100%);
+    border: 2px solid rgba(0, 245, 255, 0.3);
+    box-shadow: 
+      0 0 20px rgba(0, 245, 255, 0.3),
+      inset 0 0 20px rgba(191, 0, 255, 0.1);
+  }
+
+  .nft-card {
+    @apply cyber-border rounded-lg p-4 hover:shadow-lg transition-all duration-300;
+    @apply hover:border-neon-purple hover:bg-opacity-20;
+  }
+
+  .stats-bar {
+    @apply h-2 rounded-full overflow-hidden;
+    background: linear-gradient(90deg, rgba(0, 245, 255, 0.2) 0%, rgba(191, 0, 255, 0.2) 100%);
+  }
+
+  .stats-fill {
+    @apply h-full rounded-full transition-all duration-500;
+    background: linear-gradient(90deg, #00f5ff 0%, #bf00ff 100%);
+    box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+  }
+
+  .cyber-grid {
+    background-image: 
+      linear-gradient(rgba(0, 245, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 245, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .hologram-effect {
+    @apply relative;
+  }
+
+  .hologram-effect::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-20;
+    animation: hologram-scan 3s linear infinite;
+  }
+
+  @keyframes hologram-scan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+}
+
+@layer utilities {
+  .text-shadow-neon {
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  }
+
+  .glow-neon-blue {
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+  }
+
+  .glow-neon-purple {
+    box-shadow: 0 0 20px rgba(191, 0, 255, 0.5);
+  }
+}
